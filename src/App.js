@@ -8,12 +8,15 @@ export default function App(){
     const [ submitActivity,setSubmitActivity ] = useState([])
 
     let inputBoxEmpty;
+
     if(activity === ''){
         inputBoxEmpty = false
     }else{
         inputBoxEmpty = true
     }
     
+   
+
     function handleChange(e){
         setActivity(e.target.value)
 
@@ -24,6 +27,11 @@ export default function App(){
             setActivity('')
             setSubmitActivity('')
         }
+    }
+
+    function handleClear(){
+        localStorage.clear()
+
     }
 
     function handleAdd(){
@@ -37,6 +45,17 @@ export default function App(){
 
     function handleReorder(){
             setSubmitActivity([...submitActivity].reverse())
+    }
+
+    function handleSave(){
+        if(submitActivity){
+            localStorage.setItem('submitActivity',JSON.stringify(submitActivity))
+        }
+        if(submitActivity.length === 1){
+            alert('Activity has been saved successfully')
+        }else{
+            alert('Activities have been saved successfully')
+        }
     }
 
     function handleKey(e){
@@ -76,7 +95,11 @@ export default function App(){
             }
         <button className="btn btn-success" onClick={handleReset} style={{marginRight:10}}>Reset</button>
         <button className= 'btn btn-secondary'onClick={handleReorder}>Reorder</button>
-        <button className="btn btn-primary" style={{marginLeft:10}}>Save</button>
+        
+        {submitActivity.length > 0 ?(<button className="btn btn-primary" onClick = {handleSave} style={{marginLeft:10}}>Save</button>):(
+            (<button className="btn btn-primary" disabled style={{marginLeft:10}}>Save</button>)
+        )}
+        <button className="btn btn-danger" onClick={handleClear} style={{marginLeft:100}}>Clear saves</button>
     </div>        
 </>
     )
