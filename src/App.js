@@ -1,12 +1,16 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import './App.css';
+import Dialog from './components/Dialog'
 
 import { useState } from 'react';
 
 export default function App(){
-    const [ activity,setActivity ] = useState('')
-    const [ submitActivity,setSubmitActivity ] = useState([])
-    const [ load,setLoad ] = useState([])
+    const [ activity,setActivity ] = useState('');
+    const [ submitActivity,setSubmitActivity ] = useState([]);
+    const [ load,setLoad ] = useState([]);
+    const [ isSaveModalOpened, setIsSaveModalOpened ] = useState(false);
+    const [ isClearModalOpened, setIsClearModalOpened ] = useState(false);
 
     const now = new Date();
     let inputBoxEmpty;
@@ -33,9 +37,18 @@ export default function App(){
 
 
     function handleClear(){
+        setIsClearModalOpened(!isClearModalOpened)
+
+    }
+
+    const handleClearYes=()=>{
         localStorage.clear()
         setLoad([])
+        setIsClearModalOpened(false)
+    }
 
+    const handleClearNo = ()=>{
+        setIsClearModalOpened(false)
     }
 
     function handleAdd(){
@@ -55,20 +68,43 @@ export default function App(){
         if(submitActivity){
             localStorage.setItem('submitActivity',JSON.stringify(submitActivity))
         }
-        if(submitActivity.length === 1){
-            alert('Activity has been saved successfully')
-        }else{
-            alert('Activities have been saved successfully')
-        }
+        setIsSaveModalOpened(!isSaveModalOpened);
     }
 
     function handleLoad(){
-
         const savedActivity = localStorage.getItem('submitActivity')
         if(savedActivity){
             setLoad(JSON.parse(savedActivity))
-            
-        }
+        }   
+    }
+
+    const SaveModal=()=>{
+        return(
+            <>
+                <Dialog>
+                    <icon></icon>
+                    <h3>Activity list saved successfully</h3>
+                    <button className='close-btn' onClick ={closeSaveModal}>Close</button>    
+                </Dialog>
+            </>
+        )
+    }
+
+    const closeSaveModal = ()=>{
+        setIsSaveModalOpened(false)
+    }
+
+    const ClearModal = ()=>{
+        return(
+            <>
+            <Dialog>
+                <icon></icon>
+                <h3>Are you sure you want to clear saved activities?</h3>
+                <button onClick={handleClearYes}>Yes</button>
+                <button onClick={handleClearNo}>No</button>
+            </Dialog>
+            </>
+        )
     }
 
     function handleKey(e){
@@ -100,11 +136,12 @@ export default function App(){
                 return <ul>{listedItem}</ul>
                 
                 })):(
-                    <p className='lead'>
-                        No listed activity present 
-                    </p>
+                    <div>
+                        <i>No listed activity present</i>
+                    </div>
                 )
             }
+                    
                     <button className=" m-1 btn btn-success" onClick={handleReset} >Reset</button>
                     <button className= 'btn btn-secondary'onClick={handleReorder}>Reorder</button>
         
@@ -112,7 +149,7 @@ export default function App(){
                     (<button className="btn btn-primary" disabled style={{marginLeft:10}}>Save</button>)
                     )}
                     <button className="btn btn-danger" onClick={handleClear} style={{marginLeft:100}}>Clear saves</button>
-                    <button onClick={handleLoad}>Load</button>
+
                     {load.length > 0 ? (
                         load.map((item,index)=>{
                             const loadedItems = <li key={item.id}>{item.id}: {item.activity}</li>
@@ -120,7 +157,16 @@ export default function App(){
                             <ul>{loadedItems}</ul>
                             )
                         })
-                    ):(<p>Click load button to load previously saved activities</p>)}
+                    ):(<div>
+                            <i>Click load button to load previously saved activities</i>
+                        </div>)}
+                    <button className="btn btn-info" onClick={handleLoad}>Load</button>
+                    {isSaveModalOpened && 
+                        (<SaveModal/>)
+                    }
+                    {isClearModalOpened && 
+                        (<ClearModal/>)
+                    }
     </div>        
 </>
     )
