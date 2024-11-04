@@ -11,6 +11,7 @@ export default function App(){
     const [ load,setLoad ] = useState([]);
     const [ isSaveModalOpened, setIsSaveModalOpened ] = useState(false);
     const [ isClearModalOpened, setIsClearModalOpened ] = useState(false);
+    const [ editId,setEditId ] = useState(null)
 
     const now = new Date();
     let inputBoxEmpty;
@@ -53,13 +54,28 @@ export default function App(){
 
     function handleAdd(){
         if(activity){
+            if(editId){
+                setSubmitActivity((prev)=>
+                    prev.map((item)=>(item.id === editId ? {...item,activity:activity.trim()}:item))
+                );
+                setEditId(null)
+            }else{
             setSubmitActivity((prev)=>[{id:now.toLocaleString(),activity:activity.trim()},...prev])
+            }
         }
         if(activity.length > 0 ){
             setActivity('')
         }
     }
 
+    function handleDelete(id){
+        setSubmitActivity(submitActivity.filter((item) =>item.id !== id))
+    }
+
+    function handleEdit(id,currentActivity){
+        setEditId(id)
+        setActivity(currentActivity)
+    }
     function handleReorder(){
             setSubmitActivity([...submitActivity].reverse())
     }
@@ -132,7 +148,12 @@ export default function App(){
         
         {submitActivity.length > 0  ? (
             submitActivity.map((item,id)=>{
-                const listedItem = <li key={item.id}>{item.id}: {item.activity}</li>
+                const listedItem = 
+                <li key={item.id}>
+                    {item.id}: {item.activity}
+                    <button onClick={()=>{handleDelete(item.id)}}>Delete</button>
+                    <button onClick={()=>{handleEdit(item.id,item.activity)}}>Edit</button>
+                </li>
                 return <ul>{listedItem}</ul>
                 
                 })):(

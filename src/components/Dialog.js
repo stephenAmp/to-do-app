@@ -1,4 +1,4 @@
-export default function Dialog(props){
+ export default function Dialog(props){
 
     return(
         <>
@@ -11,3 +11,4 @@ export default function Dialog(props){
         </>
     )
 }
+
