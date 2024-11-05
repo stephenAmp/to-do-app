@@ -1,5 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import './App.css';
 import Dialog from './components/Dialog'
 
@@ -55,8 +56,8 @@ export default function App(){
     function handleAdd(){
         if(activity){
             if(editId){
-                setSubmitActivity((prev)=>
-                    prev.map((item)=>(item.id === editId ? {...item,activity:activity.trim()}:item))
+                setSubmitActivity(prev =>
+                    prev.map(item => (item.id === editId ? {...item,activity:activity.trim()}:item))
                 );
                 setEditId(null)
             }else{
@@ -69,7 +70,7 @@ export default function App(){
     }
 
     function handleDelete(id){
-        setSubmitActivity(submitActivity.filter((item) =>item.id !== id))
+        setSubmitActivity(submitActivity.filter(item => item.id !== id))
     }
 
     function handleEdit(id,currentActivity){
@@ -98,9 +99,11 @@ export default function App(){
         return(
             <>
                 <Dialog>
-                    <icon></icon>
-                    <h3>Activity list saved successfully</h3>
-                    <button className='close-btn' onClick ={closeSaveModal}>Close</button>    
+                    <i class="bi bi-check-circle" style={{fontSize:'2em',color:'green'}}></i>
+                    <p>Activity list saved successfully</p>
+                    <button className='btn-close-modal' onClick ={closeSaveModal}>
+                        <i className="bi bi-x-lg"></i> Close
+                    </button>    
                 </Dialog>
             </>
         )
@@ -114,10 +117,12 @@ export default function App(){
         return(
             <>
             <Dialog>
-                <icon></icon>
-                <h3>Are you sure you want to clear saved activities?</h3>
-                <button onClick={handleClearYes}>Yes</button>
-                <button onClick={handleClearNo}>No</button>
+            <i class="bi bi-exclamation-circle" style={{fontSize:'2em',color:"red"}}></i>
+                <p>Are you sure you want to clear saved activities?</p>
+                <div className="modal-btns">
+                    <button className="btn-yes" onClick={handleClearYes}>Yes</button>
+                    <button className="btn-no" onClick={handleClearNo}>No</button>
+                </div>
             </Dialog>
             </>
         )
@@ -135,13 +140,13 @@ export default function App(){
 <>
     <div className="container" style={{marginTop:10}}>   
         <div className="mb-3">    
-            <label for='activity' className="form-label"><b>Activity</b></label>
+            <label for='activity' className="form-label"><h3>Activity</h3></label>
             <input id ='activity' className = 'form-control' type='text' value={activity} onKeyDown={handleKey} onChange={handleChange}/>
         </div>
         {inputBoxEmpty ? (
-            <button onClick={handleAdd}>Add</button>
+            <button className='add-button' onClick={handleAdd}><i className="bi bi-plus-circle"></i> Add</button>
         ):(
-            <button disabled>Add</button>
+            <button className="add-button" disabled><i className="bi bi-plus-circle"></i> Add</button>
    
         )
         }
@@ -151,8 +156,10 @@ export default function App(){
                 const listedItem = 
                 <li key={item.id}>
                     {item.id}: {item.activity}
-                    <button onClick={()=>{handleDelete(item.id)}}>Delete</button>
-                    <button onClick={()=>{handleEdit(item.id,item.activity)}}>Edit</button>
+                    <div className="action-btns">
+                        <button style={{marginLeft:5}}className="btn btn-primary"onClick={()=>{handleDelete(item.id)}}><i class="bi bi-trash3"> Delete</i></button>
+                        <button style={{marginLeft:2}} className ='btn btn-success' onClick={()=>{handleEdit(item.id,item.activity)}}><i class="bi bi-pencil-square"> Edit</i></button>
+                    </div>
                 </li>
                 return <ul>{listedItem}</ul>
                 
@@ -162,26 +169,31 @@ export default function App(){
                     </div>
                 )
             }
-                    
-                    <button className=" m-1 btn btn-success" onClick={handleReset} >Reset</button>
-                    <button className= 'btn btn-secondary'onClick={handleReorder}>Reorder</button>
+                    <div className="button-group">
+                        <button className="btn-reset" onClick={handleReset}><i className="bi bi-arrow-counterclockwise"></i> Reset</button>
+                        <button className= 'btn-reorder'onClick={handleReorder}> <i className="bi bi-arrow-repeat"></i> Reorder</button>
         
-                    {submitActivity.length > 0 ? (<button className="btn btn-primary" onClick = {handleSave} style={{marginLeft:10}}>Save</button>):(
-                    (<button className="btn btn-primary" disabled style={{marginLeft:10}}>Save</button>)
-                    )}
-                    <button className="btn btn-danger" onClick={handleClear} style={{marginLeft:100}}>Clear saves</button>
-
-                    {load.length > 0 ? (
-                        load.map((item,index)=>{
-                            const loadedItems = <li key={item.id}>{item.id}: {item.activity}</li>
-                            return(
-                            <ul>{loadedItems}</ul>
-                            )
-                        })
-                    ):(<div>
-                            <i>Click load button to load previously saved activities</i>
-                        </div>)}
-                    <button className="btn btn-info" onClick={handleLoad}>Load</button>
+                        {submitActivity.length > 0 ? (<button className="btn-save" onClick ={handleSave}>
+                        <i className="bi bi-save"></i> Save
+                        </button>):(
+                        (<button className="btn-save" disabled><i className="bi bi-save"></i> Save
+                        </button>)
+                        )}
+                        <button className="btn-clear-saved" onClick={handleClear}><i className="bi bi-x-circle"></i> Clear Saves</button>
+                    </div>
+                        {load.length > 0 ? (
+                            load.map((item,index)=>{
+                                const loadedItems = <li key={item.id}>{item.id}: {item.activity}</li>
+                                return(
+                                <ul>{loadedItems}</ul>
+                                )
+                            })
+                        ):(<div>
+                                <i>Click load button to load previously saved activities</i>
+                            </div>)}
+                    <button className="btn-load" onClick={handleLoad}>
+                        <i className="bi bi-arrow-down-circle"></i> Load
+                    </button>
                     {isSaveModalOpened && 
                         (<SaveModal/>)
                     }
