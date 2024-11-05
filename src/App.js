@@ -155,7 +155,7 @@ export default function App(){
             submitActivity.map((item,id)=>{
                 const listedItem = 
                 <li key={item.id}>
-                    {item.id}: {item.activity}
+                    {item.id}: <b>{item.activity}</b>
                     <div className="action-btns">
                         <button style={{marginLeft:5}}className="btn btn-primary"onClick={()=>{handleDelete(item.id)}}><i class="bi bi-trash3"> Delete</i></button>
                         <button style={{marginLeft:2}} className ='btn btn-success' onClick={()=>{handleEdit(item.id,item.activity)}}><i class="bi bi-pencil-square"> Edit</i></button>
@@ -183,7 +183,9 @@ export default function App(){
                     </div>
                         {load.length > 0 ? (
                             load.map((item,index)=>{
-                                const loadedItems = <li key={item.id}>{item.id}: {item.activity}</li>
+                                const loadedItems = <li key={item.id}>
+                                    {item.id}: <b>{item.activity}</b>
+                                    </li>
                                 return(
                                 <ul>{loadedItems}</ul>
                                 )
